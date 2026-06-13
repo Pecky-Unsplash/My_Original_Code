@@ -1,5 +1,4 @@
 
-# =============================================================================
 # 03_pbmc_normalization_and_ranking.R
 #
 # PURPOSE
@@ -33,9 +32,8 @@
 library(dplyr)
 library(ggplot2)
 
-# =============================================================================
+
 # 1. Combine bulk PBMC signal with single-cell PBMC reference summary
-# =============================================================================
 
 panel_bulkPBMC_vs_scPBMC <- merge(
   panel_bulkPBMC_signal_df,
@@ -44,9 +42,9 @@ panel_bulkPBMC_vs_scPBMC <- merge(
   all.x = TRUE
 )
 
-# =============================================================================
+
 # 2. Compute PBMC-normalized accessibility ratios
-# =============================================================================
+
 # For each gene in each maternal PBMC sample, bulk +/- 10 kb accessibility
 # is divided by the gene's maximum accessibility across retained single-cell
 # PBMC immune groups. A small constant is added to the denominator to avoid
@@ -60,9 +58,8 @@ panel_bulkPBMC_vs_scPBMC$max_over_scPBMCmax <-
   panel_bulkPBMC_vs_scPBMC$max_signal /
   (panel_bulkPBMC_vs_scPBMC$scPBMC_max_no_other + 1e-6)
 
-# =============================================================================
+
 # 3. Save combined per-sample bulk versus scPBMC table
-# =============================================================================
 
 write.csv(
   panel_bulkPBMC_vs_scPBMC,
@@ -70,9 +67,8 @@ write.csv(
   row.names = FALSE
 )
 
-# =============================================================================
+
 # 4. Aggregate to per-gene contribution ranking
-# =============================================================================
 
 panel_gene_contribution <- panel_bulkPBMC_vs_scPBMC |>
   dplyr::group_by(gene) |>
@@ -87,9 +83,8 @@ panel_gene_contribution <- panel_bulkPBMC_vs_scPBMC |>
     dplyr::desc(mean_max_over_scPBMCmax)
   )
 
-# =============================================================================
+
 # 5. Save per-gene PBMC-normalized contribution ranking table
-# =============================================================================
 
 write.csv(
   as.data.frame(panel_gene_contribution),
@@ -97,9 +92,8 @@ write.csv(
   row.names = FALSE
 )
 
-# =============================================================================
+
 # 6. Generate Figure 2C: PBMC-normalized contribution ranking
-# =============================================================================
 
 plot_panel_gene_contribution <- as.data.frame(panel_gene_contribution)
 
@@ -130,9 +124,8 @@ ggsave(
   dpi = 300
 )
 
-# =============================================================================
+
 # 7. Define top-ranked subset
-# =============================================================================
 
 top_contributing_genes <- panel_gene_contribution$gene[1:10]
 
@@ -142,9 +135,8 @@ top_contributing_gene_table <- as.data.frame(
   ]
 )
 
-# =============================================================================
+
 # 8. Save top-ranked subset table
-# =============================================================================
 
 write.csv(
   top_contributing_gene_table,
@@ -152,10 +144,8 @@ write.csv(
   row.names = FALSE
 )
 
-# =============================================================================
 ## Objects required by 04_permutation_validation.R:
 # - panel_bulkPBMC_vs_scPBMC
 # - panel_gene_contribution
 # - top_contributing_genes
 # - top_contributing_gene_table
-# =============================================================================
