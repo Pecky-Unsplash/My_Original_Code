@@ -1,5 +1,4 @@
-Script 1 — 01_quantify_accessibility
-# =============================================================================
+
 # PURPOSE
 #   Defines the 52-gene placenta-associated panel, maps each gene to its
 #   GRCh38/hg38 genomic coordinates (EnsDb.Hsapiens.v86), constructs
@@ -20,7 +19,6 @@ Script 1 — 01_quantify_accessibility
 #
 # DEPENDENCIES
 #   EnsDb.Hsapiens.v86, GenomicRanges, GenomeInfoDb, rtracklayer
-# =============================================================================
 
 library(EnsDb.Hsapiens.v86)
 library(GenomicRanges)
@@ -37,9 +35,8 @@ bigwig_files <- c(
   file.path(data_dir, "ATAC_Batch2_049B_ocs.bigWig")
 )
 
-# =============================================================================
+
 # 1. Define the 52-gene placenta-associated panel
-# =============================================================================
 
 panel_genes <- c(
   "KRT7","GATA3","TFAP2C","ELF5","TP63","TEAD4","ITGA6","EGFR","PEG10",
@@ -53,9 +50,8 @@ panel_genes <- c(
 
 stopifnot(length(panel_genes) == 52)
 
-# =============================================================================
+
 # 2. Map panel genes to genomic coordinates
-# =============================================================================
 
 g <- genes(EnsDb.Hsapiens.v86)
 seqlevels(g) <- paste0("chr", seqlevels(g))
@@ -67,9 +63,8 @@ panel_gene_gr <- panel_gene_gr[match(panel_genes, mcols(panel_gene_gr)$gene_name
 
 stopifnot(all(!is.na(panel_gene_gr)))
 
-# =============================================================================
+
 # 3. Build gene-centered +/- 10 kb windows
-# =============================================================================
 
 panel_windows <- GRanges(
   seqnames = seqnames(panel_gene_gr),
@@ -81,9 +76,8 @@ panel_windows <- GRanges(
 )
 mcols(panel_windows)$gene <- mcols(panel_gene_gr)$gene_name
 
-# =============================================================================
+
 # 4. Build TSS-centered +/- 3 kb promoter windows
-# =============================================================================
 
 panel_promoters <- promoters(
   panel_gene_gr,
@@ -92,9 +86,8 @@ panel_promoters <- promoters(
 )
 mcols(panel_promoters)$gene <- mcols(panel_gene_gr)$gene_name
 
-# =============================================================================
+
 # 5. Width-weighted continuous-signal quantification functions
-# =============================================================================
 #
 # mean_score_over_window():
 #   Computes a per-base width-weighted mean signal across a window from
@@ -122,9 +115,8 @@ max_score_over_window <- function(gr) {
   max(as.data.frame(gr)$score)
 }
 
-# =============================================================================
+
 # 6. Quantify bulk PBMC signal across +/- 10 kb gene-centered windows
-# =============================================================================
 
 panel_bulkPBMC_signal_list <- list()
 
@@ -153,9 +145,8 @@ write.csv(
   row.names = FALSE
 )
 
-# =============================================================================
+
 # 7. Quantify bulk PBMC signal across +/- 3 kb promoter windows
-# =============================================================================
 
 promoter_bulkPBMC_signal_list <- list()
 
@@ -184,7 +175,6 @@ write.csv(
   row.names = FALSE
 )
 
-# =============================================================================
+
 # panel_windows and panel_promoters are required by
 # 02_scPBMC_reference_quantification.R
-# =============================================================================
