@@ -63,7 +63,6 @@ write.csv(
 
 # 3. Generate Figure 3A: Z-score heatmap of top-ranked genes
 
-
 heatmap_df <- panel_bulkPBMC_signal_df |>
   dplyr::filter(gene %in% top_contributing_genes) |>
   dplyr::select(gene, sample, mean_signal) |>
@@ -286,7 +285,6 @@ ggsave(
 
 
 # 10. Build full-panel versus top-ranked subset comparison
-
 
 panel_summary <- panel_bulkPBMC_vs_scPBMC |>
   dplyr::group_by(sample) |>
