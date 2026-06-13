@@ -1,9 +1,8 @@
 
-# =============================================================================
 #Script 2 — 02_scPBMC_reference_quantification
 #panel_windows and panel_promoters are required by
 # 02_scPBMC_reference_quantification.R if run in the same session.
-# =============================================================================
+
 ## PURPOSE
 #   Quantifies single-cell PBMC reference chromatin accessibility at the
 #   same gene-centered +/- 10 kb windows used for bulk samples (defined in
@@ -44,7 +43,6 @@
 #
 # DEPENDENCIES
 #   Signac, Seurat, ggplot2, GenomicRanges
-# =============================================================================
 
 library(Signac)
 library(Seurat)
@@ -53,9 +51,8 @@ library(GenomicRanges)
 
 DefaultAssay(pbmc) <- "ATAC"
 
-# =============================================================================
+
 # 1. Per-cell-group signal extraction
-# =============================================================================
 #
 # get_scPBMC_group_signal():
 #   For a given genomic region and a given broad immune group, generates a
@@ -100,9 +97,8 @@ get_scPBMC_group_signal <- function(seu, region_string, group_name) {
   )
 }
 
-# =============================================================================
+
 # 2. Quantify scPBMC signal across all panel genes x all immune groups
-# =============================================================================
 
 scPBMC_groups <- sort(unique(pbmc$broad_plot_group))
 
@@ -130,9 +126,8 @@ for (i in seq_len(length(panel_windows))) {
 
 panel_scPBMC_detail <- do.call(rbind, panel_scPBMC_detail_list)
 
-# =============================================================================
+
 # 3. Summarize scPBMC reference excluding the "Other" group
-# =============================================================================
 
 panel_scPBMC_no_other <- subset(panel_scPBMC_detail, group != "Other")
 
@@ -153,7 +148,7 @@ write.csv(
   file = "Supplementary_Table_S8_scPBMC_summary.csv",
   row.names = FALSE
 )
-# =============================================================================
+
 # panel_scPBMC_summary is required by
 # 03_pbmc_normalization_and_ranking.R.
-# =============================================================================
+
